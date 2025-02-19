@@ -1,3 +1,5 @@
 flask
-langchain_huggingface
+nltk
 scikit-learn
+pickle
+string
