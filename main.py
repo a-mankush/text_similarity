@@ -2,27 +2,37 @@ import pickle
 import string
 
 import nltk
-
-# from langchain_huggingface import HuggingFaceEmbeddings
+import numpy as np
+import pandas as pd
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# def get_model():
-#     print("Loading model...")
-#     m = "sentence-transformers/all-MiniLM-L6-v2"
-#     embedding = HuggingFaceEmbeddings(model_name=m)
-#     print("Model loaded")
-#     return embedding
 
+def train_and_dump_vect():
 
-# # Similarity calculation function
-# def cal_sim_with_hf(data: dict):
-#     vec1 = embedding.embed_query(data["text1"])
-#     vec2 = embedding.embed_query(data["text2"])
-#     similarity = cosine_similarity([vec1], [vec2])[0][0]
-#     return {"similarity": float(similarity)}
+    # Read the dataset from a CSV file
+    df = pd.read_csv("DataNeuron_Text_Similarity.csv")
+
+    # Split the dataframe into two numpy arrays, one for text1 and one for text2
+    text1 = df["text1"].to_numpy()
+    text2 = df["text2"].to_numpy()
+
+    # Concatenate the two arrays into a single list
+    data_list = list(text1) + list(text2)
+
+    # Create a TF-IDF vectorizer
+    vectorizer = TfidfVectorizer()
+
+    # Preprocess the data using the preprocess() function
+    preprocessed_data = [preprocess(text) for text in data_list]
+
+    # Fit the vectorizer to the preprocessed data
+    vectorizer.fit(preprocessed_data)
+
+    # Store the vectorizer in a pickle file
+    pickle.dump(vectorizer, open("vectorizer.pickle", "wb"))
 
 
 def preprocess(text):
@@ -62,11 +72,9 @@ if __name__ == "__main__":
 
     # embedding = get_model()
     data = {
-        "text1": "Ram Runs on the train every morning",
-        "text2": "Ram have strong legs because he runs every day",
+        "text1": "nuclear body seeks new tech",
+        "text2": "terror suspects face arrest",
     }
-    # result = cal_sim_with_hf(data)
-    # print(result)
 
     similarity_score = calculate_similarity_tfidf(data)
     print(f"Similarity score: {similarity_score:.4f}")
