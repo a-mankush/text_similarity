@@ -1,21 +1,18 @@
+import nltk
 from flask import Flask, jsonify, request
-from langchain_huggingface import HuggingFaceEmbeddings
 from sklearn.metrics.pairwise import cosine_similarity
 
+from main import calculate_similarity_tfidf, load_tfidf, preprocess
+
 # Load the model
-m = "sentence-transformers/all-MiniLM-L6-v2"
-embedding = HuggingFaceEmbeddings(model_name=m)
+# m = "sentence-transformers/all-MiniLM-L6-v2"
+# embedding = HuggingFaceEmbeddings(model_name=m)
 
 # Initialize Flask app
 app = Flask(__name__)
 
-
-# Similarity calculation function
-def cal_sim(data: dict):
-    vec1 = embedding.embed_query(data["text1"])
-    vec2 = embedding.embed_query(data["text2"])
-    similarity = cosine_similarity([vec1], [vec2])[0][0]
-    return {"similarity": float(similarity)}
+# Download stopwords if not already downloaded
+nltk.download("stopwords")
 
 
 # API endpoint for similarity calculation
@@ -25,7 +22,7 @@ def calculate_similarity():
         data = request.get_json()
         if not data or "text1" not in data or "text2" not in data:
             return jsonify({"error": "Invalid input format"}), 400
-        result = cal_sim(data)
+        result = calculate_similarity_tfidf(data)
         return jsonify(result), 200
 
     except Exception as e:

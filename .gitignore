@@ -3,8 +3,6 @@ test.ipynb
 DataNeuron_Text_Similarity.csv
 __pycache__/
 
-
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
