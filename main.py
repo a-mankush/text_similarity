@@ -2,7 +2,8 @@ import pickle
 import string
 
 import nltk
-from langchain_huggingface import HuggingFaceEmbeddings
+
+# from langchain_huggingface import HuggingFaceEmbeddings
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -54,7 +55,7 @@ def calculate_similarity_tfidf(data: dict):
 
     # Calculate cosine similarity
     similarity = cosine_similarity(tfidf_matrix[0], tfidf_matrix[1])
-    return similarity[0][0]
+    return {"similarity score": similarity[0][0]}
 
 
 if __name__ == "__main__":
